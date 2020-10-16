@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Account;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TransactionRequest;
 use App\Transaction;
 use Illuminate\Http\Request;
 
@@ -28,10 +29,10 @@ class TransactionController extends Controller
 
     /**
      * @param Account $account
-     * @param TransactionStoreRequest $request
+     * @param TransactionRequest $request
      * @return mixed
      */
-    public function store(Account $account, Request $request)
+    public function store(Account $account, TransactionRequest $request)
     {
         $toAccount = Account::find($request->input('to'));
 
