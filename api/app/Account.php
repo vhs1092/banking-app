@@ -19,4 +19,8 @@ class Account extends Model
         'balance'
     ];
 
+    /**
+     * @var bool
+     */
+    public $timestamps = false;
 }
