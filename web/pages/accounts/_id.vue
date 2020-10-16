@@ -138,7 +138,7 @@ export default {
             const that = this;
 
             evt.preventDefault();
-
+            that.transactionErrors = [];
             axios.post(
                     `http://localhost:8000/api/accounts/${this.$route.params.id}/transactions`,
                     this.payment)
@@ -146,7 +146,7 @@ export default {
 
                     that.payment = {};
                     that.show = false;
-                    that.transactionErrors = [];
+                    
 
                     // update items
                     setTimeout(() => {

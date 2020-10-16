@@ -1,8 +1,8 @@
 {
-  "name": "ybank",
+  "name": "banking-app",
   "version": "1.0.0",
-  "description": "ybank - frontend",
-  "author": "Arunas Smaliukas",
+  "description": "Banking App - frontend",
+  "author": "Victor Samayoa",
   "private": true,
   "scripts": {
     "dev": "nuxt-ts",
