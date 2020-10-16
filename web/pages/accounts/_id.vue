@@ -10,7 +10,7 @@
                 </div>
                 <div>
                     Balance:
-                    <code>{{ account.currency === "usd" ? "$" : "€" }}{{ account.balance }}</code>
+                    <code>{{ account.currency.name === "usd" ? "$" : "€" }}{{ account.balance }}</code>
                 </div>
             </b-card-text>
             <b-button size="sm" variant="success" @click="show = !show">New payment</b-button>
@@ -89,7 +89,7 @@ export default {
                 var transactions = [];
                 for (let i = 0; i < that.transactions.length; i++) {
                     that.transactions[i].amount =
-                        (that.account.currency === "usd" ? "$" : "€") +
+                        (that.account.currency.name === "usd" ? "$" : "€") +
                         that.transactions[i].amount;
                     if (that.account.id != that.transactions[i].to) {
                         that.transactions[i].amount = "-" + that.transactions[i].amount;
@@ -138,7 +138,7 @@ export default {
                                 var transactions = [];
                                 for (let i = 0; i < that.transactions.length; i++) {
                                     that.transactions[i].amount =
-                                        (that.account.currency === "usd" ? "$" : "€") +
+                                        (that.account.currency.name === "usd" ? "$" : "€") +
                                         that.transactions[i].amount;
                                     if (that.account.id != that.transactions[i].to) {
                                         that.transactions[i].amount = "-" + that.transactions[i].amount;
