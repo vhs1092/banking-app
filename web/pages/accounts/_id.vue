@@ -10,7 +10,7 @@
                 </div>
                 <div>
                     Balance:
-                    <code>{{ account.currency.name === "usd" ? "$" : "€" }}{{ account.balance }}</code>
+                    <code>{{ account.currency.symbol }}{{ account.balance }}</code>
                 </div>
             </b-card-text>
             <b-button size="sm" variant="success" @click="show = !show">New payment</b-button>
@@ -30,7 +30,7 @@
                 </b-form-group>
 
                 <b-form-group id="input-group-2" label="Amount:" label-for="input-2">
-                    <b-input-group prepend="$" size="sm">
+                    <b-input-group :prepend="account.currency.symbol" size="sm">
                         <b-form-input id="input-2" v-model="payment.amount" type="number" required placeholder="Amount"></b-form-input>
                     </b-input-group>
                 </b-form-group>
@@ -44,7 +44,7 @@
         </b-card>
 
         <b-card class="mt-3" header="Payment History">
-            <b-table striped hover :items="transactions"></b-table>
+            <b-table striped hover :items="transactions" :fields="transactionTableFields"></b-table>
         </b-card>
     </div>
 </div>
@@ -53,19 +53,47 @@
 <script lang="ts">
 import axios from "axios";
 import Vue from "vue";
+
 export default {
     data() {
         return {
             show: false,
             payment: {},
+
             account: null,
             transactions: null,
+
+            transactionTableFields: [{
+                    key: 'id',
+                    label: 'ID'
+                },
+                {
+                    key: 'from.name',
+                    label: 'From'
+                },
+                {
+                    key: 'to.name',
+                    label: 'To'
+                },
+                {
+                    key: 'amount',
+                    label: 'Amount'
+                },
+                {
+                    key: 'details',
+                    label: 'Details'
+                }
+            ],
+
             transactionErrors: [],
+
             loading: true
         };
     },
+
     mounted() {
         const that = this;
+
         axios
             .get(`http://localhost:8000/api/accounts/${this.$route.params.id}`)
             .then(function (response) {
@@ -73,49 +101,53 @@ export default {
                     window.location = "/";
                 } else {
                     that.account = response.data;
+
                     if (that.account && that.transactions) {
                         that.loading = false;
                     }
                 }
             });
+
         axios
             .get(
-                `http://localhost:8000/api/accounts/${
-          that.$route.params.id
-        }/transactions`
-            )
+                `http://localhost:8000/api/accounts/${that.$route.params.id}/transactions`)
             .then(function (response) {
                 that["transactions"] = response.data;
+
                 var transactions = [];
                 for (let i = 0; i < that.transactions.length; i++) {
-                    that.transactions[i].amount =
-                        (that.account.currency.name === "usd" ? "$" : "€") +
-                        that.transactions[i].amount;
-                    if (that.account.id != that.transactions[i].to) {
+                    that.transactions[i].amount = that.transactions[i].currency.symbol + that.transactions[i].amount;
+
+                    if (that.account.id != that.transactions[i].to.id) {
                         that.transactions[i].amount = "-" + that.transactions[i].amount;
                     }
+
                     transactions.push(that.transactions[i]);
                 }
+
                 that.transactions = transactions;
+
                 if (that.account && that.transactions) {
                     that.loading = false;
                 }
             });
     },
+
     methods: {
         onSubmit(evt) {
             const that = this;
+
             evt.preventDefault();
+
             axios.post(
-                    `http://localhost:8000/api/accounts/${
-          this.$route.params.id
-        }/transactions`,
-                    this.payment
-                )
+                    `http://localhost:8000/api/accounts/${this.$route.params.id}/transactions`,
+                    this.payment)
                 .then(function (response) {
+
                     that.payment = {};
                     that.show = false;
                     that.transactionErrors = [];
+
                     // update items
                     setTimeout(() => {
                         axios
@@ -127,24 +159,26 @@ export default {
                                     that.account = response.data;
                                 }
                             });
+
                         axios
-                            .get(
-                                `http://localhost:8000/api/accounts/${
-                    that.$route.params.id
-                    }/transactions`
-                            )
+                            .get(`http://localhost:8000/api/accounts/${that.$route.params.id}/transactions`)
                             .then(function (response) {
                                 that["transactions"] = response.data;
+
                                 var transactions = [];
+
                                 for (let i = 0; i < that.transactions.length; i++) {
                                     that.transactions[i].amount =
                                         (that.account.currency.name === "usd" ? "$" : "€") +
                                         that.transactions[i].amount;
+
                                     if (that.account.id != that.transactions[i].to) {
                                         that.transactions[i].amount = "-" + that.transactions[i].amount;
                                     }
+
                                     transactions.push(that.transactions[i]);
                                 }
+
                                 that.transactions = transactions;
                             });
                     }, 200);
@@ -158,6 +192,7 @@ export default {
                     }
                 });
         }
+
     }
 };
 </script>
