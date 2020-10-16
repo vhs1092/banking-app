@@ -5,16 +5,15 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class Account.
+ * Class Currency.
  */
-class Account extends Model
+class Currency extends Model
 {
     /**
      * @var array
      */
     protected $fillable = [
-        'name',
-        'balance',
+        'name', 'symbol',
     ];
 
     /**
@@ -23,10 +22,10 @@ class Account extends Model
     public $timestamps = false;
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function currency()
+    public function accounts()
     {
-        return $this->belongsTo(Currency::class);
+        return $this->hasMany(Account::class);
     }
 }

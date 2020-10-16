@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::model('account', \App\Account::class);
+
+Route::get('accounts/{account}', 'Api\\AccountController@show');
+
+Route::get('accounts/{account}/transactions', 'Api\\TransactionController@index');
+Route::post('accounts/{account}/transactions', 'Api\\TransactionController@store');
+
+Route::get('currencies', 'Api\\CurrencyController@index');
